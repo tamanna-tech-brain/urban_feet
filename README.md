@@ -8,6 +8,9 @@ The system implements the **Pega Case Lifecycle** architecture to manage end-to-
 
 ## 🎬 Working UI Showcase & Live Video Consultation
 
+### 🎥 Animated Platform Walkthrough Demo
+![Urban Fleet Operations Walkthrough](assets/demo/urban_fleet_walkthrough_demo.gif)
+
 ### 📹 Live WebRTC Video Consultation Rooms
 Direct meeting links connecting fleet vehicle owners with Service Advisors and Master Technicians for real-time visual vehicle inspections and estimate walkthroughs:
 - 🔴 **Active Video Walkaround (Case SR-2026-003 — 2023 Tesla Model Y):** [Join Live Consultation Room](https://meet.jit.si/UrbanFleet-SR2026003-live#config.prejoinPageEnabled=false&config.disableDeepLinking=true) (Room PIN: `748291`)
