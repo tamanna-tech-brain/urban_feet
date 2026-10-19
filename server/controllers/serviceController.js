@@ -362,3 +362,119 @@ exports.getServiceCenters = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
+// @desc Create or start a live video consultation meeting link
+// @route POST /api/services/:id/video-consultation
+exports.createOrStartVideoConsultation = async (req, res) => {
+  try {
+    const { agenda, roomName: customRoom } = req.body || {};
+    const idx = store.serviceRequests.findIndex(
+      r => String(r._id) === String(req.params.id) || r.caseId === req.params.id
+    );
+
+    if (idx === -1) {
+      return res.status(404).json({ success: false, message: 'Case not found' });
+    }
+
+    const reqItem = store.serviceRequests[idx];
+    const sanitizedCase = reqItem.caseId.replace(/[^a-zA-Z0-9]/g, '');
+    const randomSuffix = Math.random().toString(36).substring(2, 8);
+    const roomName = customRoom || `UrbanFleet-${sanitizedCase}-${randomSuffix}`;
+    const meetingUrl = `https://meet.jit.si/${roomName}#config.prejoinPageEnabled=false&config.disableDeepLinking=true`;
+    const pin = String(Math.floor(100000 + Math.random() * 900000));
+    const meetingAgenda = agenda || '25-Point Inspection Findings & Live Estimate Walkthrough';
+
+    reqItem.videoConsultation = {
+      active: true,
+      status: 'live',
+      meetingUrl,
+      roomName,
+      pin,
+      agenda: meetingAgenda,
+      host: req.user?._id || 'usr_adv_01',
+      hostName: req.user?.name || 'Service Staff',
+      createdAt: reqItem.videoConsultation?.createdAt || new Date(),
+      startedAt: new Date(),
+      endedAt: null,
+    };
+    reqItem.updatedAt = new Date();
+
+    reqItem.timeline.push({
+      stage: reqItem.currentStage,
+      status: reqItem.status,
+      action: `Live Video Consultation room initiated by ${req.user?.name || 'Staff'}`,
+      notes: `Room: ${roomName} | Agenda: ${meetingAgenda}`,
+      performedBy: req.user?.name || 'Service Staff',
+      timestamp: new Date(),
+    });
+
+    // Notify counterpart
+    const isCustomer = req.user && req.user.role === 'customer';
+    const recipientId = isCustomer
+      ? (reqItem.assignedAdvisor || 'usr_adv_01')
+      : reqItem.customer;
+
+    const notifMessage = isCustomer
+      ? `${req.user?.name || 'Customer'} has opened the Live Video Consultation room for Case ${reqItem.caseId}.`
+      : `${req.user?.name || 'Service Advisor'} has initiated a Live Video Consultation for Case ${reqItem.caseId}. Click to join the interactive vehicle walkthrough.`;
+
+    store.notifications.unshift({
+      _id: 'notif_' + Date.now(),
+      recipient: recipientId,
+      serviceRequest: reqItem._id,
+      caseId: reqItem.caseId,
+      title: '📹 Live Video Consultation Ready',
+      message: notifMessage,
+      type: 'video_consultation',
+      isRead: false,
+      meetingUrl,
+      createdAt: new Date(),
+    });
+
+    store.saveToFile();
+
+    const populated = store.populateRequest(reqItem);
+    res.json({ success: true, data: populated });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// @desc End active video consultation
+// @route POST /api/services/:id/video-consultation/end
+exports.endVideoConsultation = async (req, res) => {
+  try {
+    const idx = store.serviceRequests.findIndex(
+      r => String(r._id) === String(req.params.id) || r.caseId === req.params.id
+    );
+
+    if (idx === -1) {
+      return res.status(404).json({ success: false, message: 'Case not found' });
+    }
+
+    const reqItem = store.serviceRequests[idx];
+    if (reqItem.videoConsultation) {
+      reqItem.videoConsultation.active = false;
+      reqItem.videoConsultation.status = 'completed';
+      reqItem.videoConsultation.endedAt = new Date();
+    }
+    reqItem.updatedAt = new Date();
+
+    reqItem.timeline.push({
+      stage: reqItem.currentStage,
+      status: reqItem.status,
+      action: `Live Video Consultation concluded`,
+      notes: `Video meeting finished and archived.`,
+      performedBy: req.user?.name || 'Staff',
+      timestamp: new Date(),
+    });
+
+    store.saveToFile();
+
+    const populated = store.populateRequest(reqItem);
+    res.json({ success: true, data: populated });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+

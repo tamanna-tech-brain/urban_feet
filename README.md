@@ -6,6 +6,25 @@ The system implements the **Pega Case Lifecycle** architecture to manage end-to-
 
 ---
 
+## 🎬 Working UI Showcase & Live Video Consultation
+
+### 📹 Live WebRTC Video Consultation Rooms
+Direct meeting links connecting fleet vehicle owners with Service Advisors and Master Technicians for real-time visual vehicle inspections and estimate walkthroughs:
+- 🔴 **Active Video Walkaround (Case SR-2026-003 — 2023 Tesla Model Y):** [Join Live Consultation Room](https://meet.jit.si/UrbanFleet-SR2026003-live#config.prejoinPageEnabled=false&config.disableDeepLinking=true) (Room PIN: `748291`)
+- 📁 **Archived Session (Case SR-2026-002 — 2022 Ford F-150 Lightning):** [View Consultation Room](https://meet.jit.si/UrbanFleet-SR2026002-arch#config.prejoinPageEnabled=false&config.disableDeepLinking=true) (Room PIN: `394821`)
+
+### 📸 Application Interface Previews
+
+| Customer Case Lifecycle & Live SLA Countdown | Live WebRTC Video Walkaround & Co-Pilot |
+|:---:|:---:|
+| ![Customer Case Lifecycle](assets/demo/customer_case_lifecycle.jpg) | ![Live Video Consultation Walkaround](assets/demo/live_video_consultation_walkaround.jpg) |
+
+| 25-Point Digital Vehicle Inspection & Estimate | Technician Bay Workbench & Executive Cockpit |
+|:---:|:---:|
+| ![25-Point Digital Inspection](assets/demo/25_point_digital_inspection.jpg) | ![Technician Bay & Executive Cockpit](assets/demo/technician_bay_admin_cockpit.jpg) |
+
+---
+
 ## 🌟 Key Business Objectives Achieved
 
 1. **Customer Service Intake:** Customers can book service appointments, select from registered fleet vehicles, pick preferred service hubs, and specify symptoms online.
@@ -14,6 +33,7 @@ The system implements the **Pega Case Lifecycle** architecture to manage end-to-
 4. **Technician Bay Dispatch & Work Order Execution:** Automated assignment of work orders to certified bay technicians with live execution checklists.
 5. **Automated Completion Alerts & Invoice Generation:** Automated notifications dispatched upon service completion with downloadable, printable tax receipts.
 6. **Executive Fleet Cockpit:** Real-time SLA compliance tracking (24h turnaround target), bay utilization across service centers, and servicing revenue analytics.
+7. **Live Video Consultation & Virtual Walkarounds:** Integrated WebRTC / Jitsi video consultation meeting links connecting vehicle owners with service advisors for live visual vehicle inspections and real-time estimate walkthroughs.
 
 ---
 
@@ -63,7 +83,8 @@ c:/Project/vechicle/
 │   │   │   ├── InspectionModal.jsx        # Digital 25-point vehicle inspection modal
 │   │   │   ├── EstimateModal.jsx          # Itemized estimate builder modal
 │   │   │   ├── EstimateApprovalModal.jsx  # Customer approval & digital signature modal
-│   │   │   └── InvoiceModal.jsx           # Official printable servicing invoice receipt
+│   │   │   ├── InvoiceModal.jsx           # Official printable servicing invoice receipt
+│   │   │   └── VideoConsultationModal.jsx # Live WebRTC video meeting room & Co-Pilot
 │   │   ├── context/
 │   │   │   └── AuthContext.jsx            # Dynamic persona state & live alert polling
 │   │   ├── pages/
@@ -169,3 +190,7 @@ npm run dev
 - `GET /api/notifications` — Get user automated alerts
 - `PATCH /api/notifications/:id/read` — Mark notification read
 - `PATCH /api/notifications/mark-all-read` — Clear all unread notifications
+
+### Live Video Consultation (WebRTC / Jitsi)
+- `POST /api/services/:id/video-consultation` — Generate & launch secure live video consultation meeting link with agenda
+- `POST /api/services/:id/video-consultation/end` — Conclude live video session and archive audit history

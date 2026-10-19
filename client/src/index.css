@@ -207,6 +207,30 @@ a:hover {
   border-color: #f87171;
 }
 
+.btn-rose {
+  background: linear-gradient(135deg, #f43f5e 0%, #be123c 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(244, 63, 94, 0.35);
+}
+
+.btn-rose:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(244, 63, 94, 0.5);
+  color: #fff;
+}
+
+.btn-cyan {
+  background: rgba(0, 242, 254, 0.15);
+  border: 1px solid rgba(0, 242, 254, 0.4);
+  color: var(--accent-cyan);
+}
+
+.btn-cyan:hover {
+  background: rgba(0, 242, 254, 0.25);
+  border-color: var(--accent-cyan);
+  color: #fff;
+}
+
 .btn-sm {
   padding: 0.45rem 0.85rem;
   font-size: 0.8rem;

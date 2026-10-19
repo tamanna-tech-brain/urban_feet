@@ -130,6 +130,19 @@ class ApiService {
     });
   }
 
+  async createVideoConsultation(id, payload = {}) {
+    return this.request(`/services/${id}/video-consultation`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  }
+
+  async endVideoConsultation(id) {
+    return this.request(`/services/${id}/video-consultation/end`, {
+      method: 'POST',
+    });
+  }
+
   async getStats() {
     return this.request('/services/stats/summary');
   }

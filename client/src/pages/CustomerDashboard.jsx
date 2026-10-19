@@ -11,11 +11,14 @@ import {
   ChevronRight, 
   Receipt, 
   Wrench,
-  ShieldAlert
+  ShieldAlert,
+  Video,
+  Radio
 } from 'lucide-react';
 import CaseLifecycleStepper from '../components/CaseLifecycleStepper';
 import EstimateApprovalModal from '../components/EstimateApprovalModal';
 import InvoiceModal from '../components/InvoiceModal';
+import VideoConsultationModal from '../components/VideoConsultationModal';
 
 export const CustomerDashboard = ({
   vehicles,
@@ -26,12 +29,14 @@ export const CustomerDashboard = ({
 }) => {
   const [selectedRequestForApproval, setSelectedRequestForApproval] = useState(null);
   const [selectedRequestForInvoice, setSelectedRequestForInvoice] = useState(null);
+  const [selectedRequestForVideo, setSelectedRequestForVideo] = useState(null);
 
   const activeRequests = serviceRequests.filter(r => r.status !== 'COMPLETED' && r.status !== 'CANCELLED');
   const pastRequests = serviceRequests.filter(r => r.status === 'COMPLETED');
 
-  // Find any request needing customer approval
+  // Find any request needing customer approval or active video consultation
   const pendingApprovalCase = activeRequests.find(r => r.status === 'AWAITING_APPROVAL');
+  const activeVideoCase = activeRequests.find(r => r.videoConsultation?.active);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
@@ -81,6 +86,58 @@ export const CustomerDashboard = ({
             <FileCheck size={18} />
             Review & Authorize Estimate
           </button>
+        </div>
+      )}
+
+      {/* Live Video Consultation Active Banner */}
+      {activeVideoCase && (
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(244, 63, 94, 0.15) 0%, rgba(225, 29, 72, 0.25) 100%)',
+          border: '1px solid rgba(244, 63, 94, 0.6)',
+          borderRadius: 'var(--radius-lg)',
+          padding: '1.25rem 1.5rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '1rem',
+          boxShadow: '0 0 30px rgba(244, 63, 94, 0.25)',
+          animation: 'pulseGlow 2.5s infinite ease-in-out',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div style={{
+              width: '44px',
+              height: '44px',
+              borderRadius: '12px',
+              background: 'rgba(244, 63, 94, 0.25)',
+              color: '#fb7185',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <Video size={24} />
+            </div>
+            <div>
+              <div style={{ fontWeight: 800, fontSize: '1rem', color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                🔴 Live Video Consultation Open ({activeVideoCase.caseId})
+                <span className="badge badge-rose" style={{ fontSize: '0.7rem' }}>ROOM ACTIVE</span>
+              </div>
+              <div style={{ fontSize: '0.85rem', color: '#ffe4e6' }}>
+                Your service advisor {activeVideoCase.videoConsultation?.hostName || 'Sarah Jenkins'} has opened the live vehicle walkaround room.
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button
+              onClick={() => setSelectedRequestForVideo(activeVideoCase)}
+              className="btn btn-rose"
+              style={{ fontWeight: 700, gap: '0.5rem' }}
+            >
+              <Video size={16} />
+              Join Live Video Call
+            </button>
+          </div>
         </div>
       )}
 
@@ -240,6 +297,16 @@ export const CustomerDashboard = ({
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <button
+                      onClick={() => setSelectedRequestForVideo(req)}
+                      className={`btn btn-sm ${req.videoConsultation?.active ? 'btn-rose' : 'btn-secondary'}`}
+                      style={{ gap: '0.4rem', fontSize: '0.775rem' }}
+                      title="Launch or join live video consultation"
+                    >
+                      <Video size={13} />
+                      {req.videoConsultation?.active ? 'Join Live Video' : 'Video Call'}
+                    </button>
+
                     {req.status === 'AWAITING_APPROVAL' && (
                       <button
                         onClick={() => setSelectedRequestForApproval(req)}
@@ -373,6 +440,13 @@ export const CustomerDashboard = ({
         isOpen={Boolean(selectedRequestForInvoice)}
         onClose={() => setSelectedRequestForInvoice(null)}
         serviceRequest={selectedRequestForInvoice}
+      />
+
+      <VideoConsultationModal
+        isOpen={Boolean(selectedRequestForVideo)}
+        onClose={() => setSelectedRequestForVideo(null)}
+        serviceRequest={selectedRequestForVideo}
+        onSuccess={onRefresh}
       />
     </div>
   );

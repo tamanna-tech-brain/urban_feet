@@ -13,11 +13,20 @@ import {
   XCircle, 
   Receipt,
   Shield,
-  History
+  History,
+  Video,
+  Copy,
+  Check,
+  ExternalLink,
+  Radio,
+  Sparkles,
+  PhoneCall,
+  Lock
 } from 'lucide-react';
 import CaseLifecycleStepper from '../components/CaseLifecycleStepper';
 import EstimateApprovalModal from '../components/EstimateApprovalModal';
 import InvoiceModal from '../components/InvoiceModal';
+import VideoConsultationModal from '../components/VideoConsultationModal';
 
 export const ServiceDetailView = ({
   serviceRequest,
@@ -27,6 +36,8 @@ export const ServiceDetailView = ({
   const [activeTab, setActiveTab] = useState('overview');
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
 
   if (!serviceRequest) return null;
 
@@ -44,6 +55,7 @@ export const ServiceDetailView = ({
     primaryConcerns,
     inspection,
     estimate,
+    videoConsultation,
     timeline = [],
   } = serviceRequest;
 
@@ -86,7 +98,20 @@ export const ServiceDetailView = ({
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <button
+            onClick={() => setShowVideoModal(true)}
+            className={`btn btn-sm ${videoConsultation?.active ? 'btn-rose' : 'btn-secondary'}`}
+            style={{
+              gap: '0.45rem',
+              fontWeight: 700,
+              boxShadow: videoConsultation?.active ? '0 0 15px rgba(244, 63, 94, 0.45)' : 'none',
+            }}
+          >
+            <Video size={14} />
+            {videoConsultation?.active ? 'Join Live Video Call' : 'Live Video Consultation'}
+          </button>
+
           {status === 'AWAITING_APPROVAL' && (
             <button
               onClick={() => setShowApprovalModal(true)}
@@ -114,6 +139,85 @@ export const ServiceDetailView = ({
         slaDeadline={slaDeadline}
       />
 
+      {/* Live Video Consultation Hero Banner */}
+      <div style={{
+        background: videoConsultation?.active
+          ? 'linear-gradient(135deg, rgba(244, 63, 94, 0.12) 0%, rgba(190, 18, 60, 0.22) 100%)'
+          : 'linear-gradient(135deg, rgba(16, 23, 41, 0.8) 0%, rgba(10, 15, 28, 0.9) 100%)',
+        border: videoConsultation?.active ? '1px solid rgba(244, 63, 94, 0.45)' : '1px solid var(--border-medium)',
+        borderRadius: 'var(--radius-lg)',
+        padding: '1.25rem 1.5rem',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '1rem',
+        boxShadow: videoConsultation?.active ? '0 0 30px rgba(244, 63, 94, 0.2)' : 'none',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div style={{
+            width: '46px',
+            height: '46px',
+            borderRadius: '12px',
+            background: videoConsultation?.active ? 'rgba(244, 63, 94, 0.25)' : 'rgba(0, 242, 254, 0.12)',
+            color: videoConsultation?.active ? '#fb7185' : 'var(--accent-cyan)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: videoConsultation?.active ? '0 0 20px rgba(244, 63, 94, 0.4)' : '0 0 15px rgba(0, 242, 254, 0.2)',
+          }}>
+            <Video size={24} />
+          </div>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+              <h3 style={{ fontSize: '1.05rem', color: '#fff' }}>
+                Live Video Consultation (WebRTC / Jitsi)
+              </h3>
+              {videoConsultation?.active ? (
+                <span className="badge badge-rose" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                  <Radio size={12} /> ROOM LIVE
+                </span>
+              ) : videoConsultation?.status === 'completed' ? (
+                <span className="badge badge-slate">Archived Meeting</span>
+              ) : (
+                <span className="badge badge-cyan">On-Demand Available</span>
+              )}
+            </div>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+              {videoConsultation?.active
+                ? `Active meeting room: ${videoConsultation.roomName} • Host: ${videoConsultation.hostName} • Agenda: ${videoConsultation.agenda}`
+                : `Connect advisor & customer via secure 1-click video to conduct 25-point visual walkarounds and itemized quote approvals.`}
+            </p>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+          {videoConsultation?.meetingUrl && (
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(videoConsultation.meetingUrl);
+                setCopiedLink(true);
+                setTimeout(() => setCopiedLink(false), 2000);
+              }}
+              className="btn btn-secondary btn-sm"
+              style={{ gap: '0.4rem', fontSize: '0.775rem' }}
+            >
+              {copiedLink ? <Check size={14} style={{ color: 'var(--accent-emerald)' }} /> : <Copy size={14} />}
+              {copiedLink ? 'Copied Link' : 'Copy Video Link'}
+            </button>
+          )}
+
+          <button
+            onClick={() => setShowVideoModal(true)}
+            className={`btn ${videoConsultation?.active ? 'btn-rose' : 'btn-primary'} btn-sm`}
+            style={{ fontWeight: 700, gap: '0.45rem' }}
+          >
+            <Video size={15} />
+            {videoConsultation?.active ? 'Enter Live Consultation' : 'Launch Video Room'}
+          </button>
+        </div>
+      </div>
+
       {/* Detail Tabs */}
       <div style={{
         display: 'flex',
@@ -123,6 +227,7 @@ export const ServiceDetailView = ({
       }}>
         {[
           { id: 'overview', label: 'Case Overview' },
+          { id: 'video', label: `Video Consultation ${videoConsultation?.active ? '🔴' : ''}` },
           { id: 'inspection', label: `Digital Inspection (${inspection ? 'Completed' : 'Pending'})` },
           { id: 'estimate', label: `Cost Estimate (${estimate ? '$' + estimate.totalAmount?.toFixed(2) : 'Pending'})` },
           { id: 'timeline', label: `Audit Timeline (${timeline.length})` },
@@ -219,6 +324,197 @@ export const ServiceDetailView = ({
             }}>
               {primaryConcerns}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tab: Video Consultation */}
+      {activeTab === 'video' && (
+        <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '1rem',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+              <div style={{
+                width: '42px',
+                height: '42px',
+                borderRadius: '12px',
+                background: videoConsultation?.active ? 'rgba(244, 63, 94, 0.2)' : 'rgba(0, 242, 254, 0.15)',
+                color: videoConsultation?.active ? '#fb7185' : 'var(--accent-cyan)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+                <Video size={22} />
+              </div>
+              <div>
+                <h3 style={{ fontSize: '1.15rem' }}>Live Virtual Inspection & Consultation</h3>
+                <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                  Interactive WebRTC audio/video session connecting Service Advisor, Technician, and Vehicle Owner
+                </p>
+              </div>
+            </div>
+
+            <div>
+              {videoConsultation?.active ? (
+                <span className="badge badge-rose" style={{ padding: '0.35rem 0.75rem', fontSize: '0.8rem' }}>
+                  <Radio size={14} /> LIVE CALL ACTIVE
+                </span>
+              ) : videoConsultation?.status === 'completed' ? (
+                <span className="badge badge-slate" style={{ padding: '0.35rem 0.75rem', fontSize: '0.8rem' }}>
+                  MEETING ARCHIVED
+                </span>
+              ) : (
+                <span className="badge badge-cyan" style={{ padding: '0.35rem 0.75rem', fontSize: '0.8rem' }}>
+                  READY TO CONNECT
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Consultation Details Card */}
+          <div style={{
+            background: 'rgba(0, 0, 0, 0.35)',
+            border: '1px solid var(--border-medium)',
+            borderRadius: 'var(--radius-lg)',
+            padding: '1.5rem',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '1.25rem',
+          }}>
+            <div>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textTransform: 'uppercase', display: 'block', marginBottom: '0.3rem' }}>
+                Consultation Agenda
+              </span>
+              <div style={{ fontWeight: 700, color: '#fff', fontSize: '0.95rem' }}>
+                {videoConsultation?.agenda || '25-Point Digital Inspection Findings & Estimate Walkthrough'}
+              </div>
+            </div>
+
+            <div>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textTransform: 'uppercase', display: 'block', marginBottom: '0.3rem' }}>
+                Meeting Room Security & PIN
+              </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-cyan)', fontSize: '0.9rem' }}>
+                  {videoConsultation?.roomName || `UrbanFleet-${caseId}`}
+                </span>
+                {videoConsultation?.pin && (
+                  <span style={{
+                    background: 'rgba(255, 255, 255, 0.08)',
+                    padding: '0.15rem 0.5rem',
+                    borderRadius: '4px',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '0.8rem',
+                    color: '#fff',
+                  }}>
+                    PIN: {videoConsultation.pin}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textTransform: 'uppercase', display: 'block', marginBottom: '0.3rem' }}>
+                Host & Assigned Staff
+              </span>
+              <div style={{ color: '#cbd5e1', fontSize: '0.9rem' }}>
+                {videoConsultation?.hostName || 'Sarah Jenkins (Master Service Advisor)'}
+              </div>
+            </div>
+
+            <div>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textTransform: 'uppercase', display: 'block', marginBottom: '0.3rem' }}>
+                Timing & Log
+              </span>
+              <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                {videoConsultation?.startedAt 
+                  ? `Initiated: ${new Date(videoConsultation.startedAt).toLocaleString()}`
+                  : 'Ready on-demand whenever customer or advisor is available'}
+              </div>
+            </div>
+          </div>
+
+          {/* Meeting Link Bar */}
+          {videoConsultation?.meetingUrl && (
+            <div style={{
+              background: 'rgba(12, 18, 34, 0.8)',
+              border: '1px solid var(--border-subtle)',
+              borderRadius: 'var(--radius-md)',
+              padding: '1rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '0.75rem',
+            }}>
+              <div style={{ flex: 1, minWidth: '240px' }}>
+                <div style={{ fontSize: '0.725rem', color: 'var(--text-dim)', textTransform: 'uppercase', marginBottom: '0.2rem' }}>
+                  Shareable Video Meeting Link
+                </div>
+                <div style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.825rem',
+                  color: 'var(--accent-cyan)',
+                  wordBreak: 'break-all',
+                }}>
+                  {videoConsultation.meetingUrl}
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(videoConsultation.meetingUrl);
+                    setCopiedLink(true);
+                    setTimeout(() => setCopiedLink(false), 2000);
+                  }}
+                  className="btn btn-secondary btn-sm"
+                  style={{ gap: '0.4rem' }}
+                >
+                  {copiedLink ? <Check size={14} style={{ color: 'var(--accent-emerald)' }} /> : <Copy size={14} />}
+                  {copiedLink ? 'Copied!' : 'Copy Link'}
+                </button>
+
+                <a
+                  href={videoConsultation.meetingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-secondary btn-sm"
+                  style={{ gap: '0.4rem' }}
+                >
+                  <ExternalLink size={14} /> Open External
+                </a>
+              </div>
+            </div>
+          )}
+
+          {/* Action Call to Action */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '1rem',
+            paddingTop: '0.5rem',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', fontSize: '0.825rem' }}>
+              <Lock size={14} style={{ color: 'var(--accent-emerald)' }} />
+              End-to-End Encrypted Peer-to-Peer Stream • Zero Downloads Required
+            </div>
+
+            <button
+              onClick={() => setShowVideoModal(true)}
+              className={`btn ${videoConsultation?.active ? 'btn-rose' : 'btn-primary'}`}
+              style={{ padding: '0.75rem 2rem', fontWeight: 700, gap: '0.5rem' }}
+            >
+              <Video size={18} />
+              {videoConsultation?.active ? 'Join Live Consultation Room' : 'Start Live Consultation Now'}
+            </button>
           </div>
         </div>
       )}
@@ -487,6 +783,14 @@ export const ServiceDetailView = ({
         isOpen={showInvoiceModal}
         onClose={() => setShowInvoiceModal(false)}
         serviceRequest={serviceRequest}
+      />
+
+      {/* Video Consultation Modal */}
+      <VideoConsultationModal
+        isOpen={showVideoModal}
+        onClose={() => setShowVideoModal(false)}
+        serviceRequest={serviceRequest}
+        onSuccess={onRefresh}
       />
     </div>
   );

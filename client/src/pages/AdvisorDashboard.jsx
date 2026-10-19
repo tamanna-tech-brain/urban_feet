@@ -10,11 +10,14 @@ import {
   Filter, 
   Eye, 
   Wrench,
-  CheckCheck
+  CheckCheck,
+  Video,
+  Radio
 } from 'lucide-react';
 import CaseLifecycleStepper from '../components/CaseLifecycleStepper';
 import InspectionModal from '../components/InspectionModal';
 import EstimateModal from '../components/EstimateModal';
+import VideoConsultationModal from '../components/VideoConsultationModal';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
@@ -27,6 +30,7 @@ export const AdvisorDashboard = ({
   const [filter, setFilter] = useState('ALL');
   const [selectedCaseForInspection, setSelectedCaseForInspection] = useState(null);
   const [selectedCaseForEstimate, setSelectedCaseForEstimate] = useState(null);
+  const [selectedCaseForVideo, setSelectedCaseForVideo] = useState(null);
   const [assigningCase, setAssigningCase] = useState(null);
   const [selectedTechId, setSelectedTechId] = useState('');
   const [assignLoading, setAssignLoading] = useState(false);
@@ -224,6 +228,16 @@ export const AdvisorDashboard = ({
                   )}
 
                   <button
+                    onClick={() => setSelectedCaseForVideo(req)}
+                    className={`btn btn-sm ${req.videoConsultation?.active ? 'btn-rose' : 'btn-secondary'}`}
+                    style={{ gap: '0.4rem', fontSize: '0.775rem' }}
+                    title="Launch live video consultation"
+                  >
+                    <Video size={13} />
+                    {req.videoConsultation?.active ? 'Live Video' : 'Video Call'}
+                  </button>
+
+                  <button
                     onClick={() => onSelectCase(req)}
                     className="btn btn-secondary btn-sm"
                   >
@@ -321,6 +335,14 @@ export const AdvisorDashboard = ({
         isOpen={Boolean(selectedCaseForEstimate)}
         onClose={() => setSelectedCaseForEstimate(null)}
         serviceRequest={selectedCaseForEstimate}
+        onSuccess={onRefresh}
+      />
+
+      {/* Video Consultation Modal */}
+      <VideoConsultationModal
+        isOpen={Boolean(selectedCaseForVideo)}
+        onClose={() => setSelectedCaseForVideo(null)}
+        serviceRequest={selectedCaseForVideo}
         onSuccess={onRefresh}
       />
     </div>

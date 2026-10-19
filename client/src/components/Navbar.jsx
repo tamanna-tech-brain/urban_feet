@@ -9,7 +9,8 @@ import {
   ExternalLink, 
   Activity, 
   Layers,
-  ChevronDown
+  ChevronDown,
+  Video
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -290,6 +291,29 @@ export const Navbar = ({ onOpenRequestModal }) => {
                         <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1.35 }}>
                           {n.message}
                         </div>
+                        {n.meetingUrl && (
+                          <div style={{ marginTop: '0.35rem' }}>
+                            <a
+                              href={n.meetingUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="btn btn-sm"
+                              style={{
+                                background: 'rgba(244, 63, 94, 0.2)',
+                                color: '#fb7185',
+                                border: '1px solid rgba(244, 63, 94, 0.4)',
+                                padding: '0.2rem 0.6rem',
+                                fontSize: '0.7rem',
+                                fontWeight: 700,
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '0.35rem',
+                              }}
+                            >
+                              <Video size={12} /> Join Live Video Call
+                            </a>
+                          </div>
+                        )}
                         <div style={{ fontSize: '0.65rem', color: 'var(--text-dim)', marginTop: '0.2rem' }}>
                           {new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </div>

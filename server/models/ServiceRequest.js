@@ -130,6 +130,54 @@ const serviceRequestSchema = new mongoose.Schema({
     ref: 'Estimate',
     default: null,
   },
+  videoConsultation: {
+    active: {
+      type: Boolean,
+      default: false,
+    },
+    status: {
+      type: String,
+      enum: ['none', 'scheduled', 'live', 'completed'],
+      default: 'none',
+    },
+    meetingUrl: {
+      type: String,
+      default: '',
+    },
+    roomName: {
+      type: String,
+      default: '',
+    },
+    pin: {
+      type: String,
+      default: '',
+    },
+    agenda: {
+      type: String,
+      default: '',
+    },
+    host: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      default: null,
+    },
+    hostName: {
+      type: String,
+      default: '',
+    },
+    createdAt: {
+      type: Date,
+      default: null,
+    },
+    startedAt: {
+      type: Date,
+      default: null,
+    },
+    endedAt: {
+      type: Date,
+      default: null,
+    },
+  },
   createdAt: {
     type: Date,
     default: Date.now,

@@ -205,6 +205,19 @@
       "odometerAtIntake": 28450,
       "inspection": "insp_01",
       "estimate": "est_01",
+      "videoConsultation": {
+        "active": false,
+        "status": "completed",
+        "meetingUrl": "https://meet.jit.si/UrbanFleet-SR2026002-arch#config.prejoinPageEnabled=false&config.disableDeepLinking=true",
+        "roomName": "UrbanFleet-SR2026002-arch",
+        "pin": "394821",
+        "agenda": "Brake Pad Wear & HEPA Filter Replacement Review",
+        "host": "usr_adv_01",
+        "hostName": "Sarah Jenkins (Advisor)",
+        "createdAt": "2026-10-16T11:00:00.000Z",
+        "startedAt": "2026-10-16T11:00:00.000Z",
+        "endedAt": "2026-10-16T11:22:00.000Z"
+      },
       "timeline": [
         {
           "stage": "Request Intake",
@@ -277,6 +290,19 @@
       "odometerAtIntake": 14200,
       "inspection": "insp_02",
       "estimate": "est_02",
+      "videoConsultation": {
+        "active": true,
+        "status": "live",
+        "meetingUrl": "https://meet.jit.si/UrbanFleet-SR2026003-live#config.prejoinPageEnabled=false&config.disableDeepLinking=true",
+        "roomName": "UrbanFleet-SR2026003-live",
+        "pin": "748291",
+        "agenda": "25-Point Inspection Findings & Estimate Walkthrough",
+        "host": "usr_adv_01",
+        "hostName": "Sarah Jenkins (Advisor)",
+        "createdAt": "2026-10-17T09:35:00.000Z",
+        "startedAt": "2026-10-17T09:35:00.000Z",
+        "endedAt": null
+      },
       "timeline": [
         {
           "stage": "Request Intake",
@@ -344,10 +370,39 @@
           "action": "Request submitted by customer via Urban Fleet Web App",
           "performedBy": "Johnathan Vance",
           "timestamp": "2026-10-17T11:30:00.000Z"
+        },
+        {
+          "stage": "Request Intake",
+          "status": "NEW",
+          "action": "Live Video Consultation room initiated by Sarah Jenkins",
+          "notes": "Room: UrbanFleet-SR2026004-4xgsyy | Agenda: Pre-service Inspection Findings Walkthrough",
+          "performedBy": "Sarah Jenkins",
+          "timestamp": "2026-10-18T08:51:51.471Z"
+        },
+        {
+          "stage": "Request Intake",
+          "status": "NEW",
+          "action": "Live Video Consultation concluded",
+          "notes": "Video meeting finished and archived.",
+          "performedBy": "Sarah Jenkins",
+          "timestamp": "2026-10-18T08:52:18.866Z"
         }
       ],
       "createdAt": "2026-10-17T11:30:00.000Z",
-      "updatedAt": "2026-10-17T11:30:00.000Z"
+      "updatedAt": "2026-10-18T08:52:18.866Z",
+      "videoConsultation": {
+        "active": false,
+        "status": "completed",
+        "meetingUrl": "https://meet.jit.si/UrbanFleet-SR2026004-4xgsyy#config.prejoinPageEnabled=false&config.disableDeepLinking=true",
+        "roomName": "UrbanFleet-SR2026004-4xgsyy",
+        "pin": "242626",
+        "agenda": "Pre-service Inspection Findings Walkthrough",
+        "host": "usr_adv_01",
+        "hostName": "Sarah Jenkins",
+        "createdAt": "2026-10-18T08:51:51.471Z",
+        "startedAt": "2026-10-18T08:51:51.471Z",
+        "endedAt": "2026-10-18T08:52:18.866Z"
+      }
     }
   ],
   "inspections": [
@@ -553,6 +608,18 @@
   ],
   "notifications": [
     {
+      "_id": "notif_1792313511471",
+      "recipient": "usr_cust_01",
+      "serviceRequest": "req_04",
+      "caseId": "SR-2026-004",
+      "title": "📹 Live Video Consultation Ready",
+      "message": "Sarah Jenkins has initiated a Live Video Consultation for Case SR-2026-004. Click to join the interactive vehicle walkthrough.",
+      "type": "video_consultation",
+      "isRead": false,
+      "meetingUrl": "https://meet.jit.si/UrbanFleet-SR2026004-4xgsyy#config.prejoinPageEnabled=false&config.disableDeepLinking=true",
+      "createdAt": "2026-10-18T08:51:51.471Z"
+    },
+    {
       "_id": "notif_1792232957198",
       "recipient": "usr_tech_01",
       "serviceRequest": "req_03",
@@ -617,6 +684,18 @@
       "type": "request_created",
       "isRead": false,
       "createdAt": "2026-10-17T11:30:00.000Z"
+    },
+    {
+      "_id": "notif_05",
+      "recipient": "usr_cust_01",
+      "serviceRequest": "req_03",
+      "caseId": "SR-2026-003",
+      "title": "📹 Live Video Consultation Ready",
+      "message": "Sarah Jenkins has opened a live video walkaround for Case SR-2026-003. Join now to discuss suspension and battery findings.",
+      "type": "video_consultation",
+      "isRead": false,
+      "meetingUrl": "https://meet.jit.si/UrbanFleet-SR2026003-live#config.prejoinPageEnabled=false&config.disableDeepLinking=true",
+      "createdAt": "2026-10-17T09:35:00.000Z"
     }
   ]
 }
